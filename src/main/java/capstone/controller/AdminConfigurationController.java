@@ -1,7 +1,6 @@
 package capstone.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,10 +13,10 @@ import capstone.repository.AdminConfigurationRepository;
 @RestController
 @RequestMapping("/admin")
 public class AdminConfigurationController {
-	
+
 	@Autowired
 	private AdminConfigurationRepository acRepository;
-	
+
 	@PostMapping("/configurations/save")
 	public AdminConfiguration saveConfigurations(@RequestBody AdminConfiguration adminConfig) {
 		acRepository.deleteAll();
@@ -25,7 +24,7 @@ public class AdminConfigurationController {
 		System.out.println("Number of ranked projects: " + adminConfig.numRankedProjects);
 		return acRepository.save(adminConfig);
 	}
-	
+
 	@GetMapping("/configurations/current")
 	public AdminConfiguration getConfiguration() {
 		Long currentId = (long) 1;
