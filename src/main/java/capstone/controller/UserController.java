@@ -229,9 +229,14 @@ public class UserController {
 
 	// Admin can register student emails and send an invitation to the platform
 	@RequestMapping(value = "/invite/students", consumes = "application/json", produces = "application/json", method = RequestMethod.POST)
-	public void studentEmailRegistrationAttempt(@RequestBody Map<String, String> emailsData, String year, String semester) {
+	public void studentEmailRegistrationAttempt(@RequestBody Map<String, String> emailsData) {
 		System.out.println(emailsData);
 		System.out.println("Received HTTP POST");
+		String year = emailsData.get("year");
+		String semester = emailsData.get("semester");
+		System.out.println(year);
+		System.out.println(semester);
+		
 
 		String[] emailsArray = emailsData.get(Constants.EMAILS).split("\n");
 
