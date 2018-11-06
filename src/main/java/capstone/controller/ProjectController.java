@@ -88,6 +88,10 @@ public class ProjectController {
 	@GetMapping("/student/{email:.+}")
 	public @ResponseBody Project getUserProject(@PathVariable("email") String email) {
 		Student user = (Student) userService.findUserByEmail(email);
+		if(user.getProject() == null) {
+			Project newProject = new Project();
+			return newProject;
+		}
 		return user.getProject();
 	}
 
@@ -108,7 +112,8 @@ public class ProjectController {
 				}
 			}
 		}
-		return null;
+		Stakeholder s = new Stakeholder();
+		return s;
 	}
 
 	/* Project Matching */
