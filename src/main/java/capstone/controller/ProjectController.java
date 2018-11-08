@@ -88,7 +88,7 @@ public class ProjectController {
 	@GetMapping("/student/{email:.+}")
 	public @ResponseBody Project getUserProject(@PathVariable("email") String email) {
 		Student user = (Student) userService.findUserByEmail(email);
-		if(user.getProject() == null) {
+		if (user.getProject() == null) {
 			Project newProject = new Project();
 			return newProject;
 		}
@@ -216,11 +216,12 @@ public class ProjectController {
 	// @PostMapping("/rankingsSubmitAttempt/{email:.+}")
 	@PostMapping("/{email:.+}/submit-ranking")
 	public @ResponseBody String projectRankingsSubmission(@PathVariable("email") String email,
-			@RequestBody List<Integer> projects) {
-		User user = userService.findUserByEmail(email);
-		for (int rank = 1; rank <= 5; rank++) {
-			projectService.saveRanking(projects.get(rank - 1), user.getUserId(), rank);
-		}
+			@RequestBody List<Integer> rankings) {
+		Student student = (Student) userService.findUserByEmail(email);
+		List<Integer> orderedRankings = rankings.subList(0, 5);
+		System.out.println(orderedRankings);
+		student.setOrderedRankings(orderedRankings);
+		userService.saveUser(student);
 		return Constants.SUCCESS;
 	}
 
