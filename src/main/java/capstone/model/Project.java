@@ -19,315 +19,320 @@ import capstone.util.ProjectAssignment;
 
 @Entity
 public class Project implements Comparable<Object> {
-	
+
 	// popularity metrics:
-		double sum_p = 0; // sum of all students' satisfaction scores
-		double p_max; // maximum satisfaction score for a single student (if NUM_RANKED = 3, this is 4)
-		double n; // number of students interested in this project
-		double c; // cutoff
-		double popularity;
-		double projSatScore;
+	double sum_p = 0; // sum of all students' satisfaction scores
+	double p_max; // maximum satisfaction score for a single student (if NUM_RANKED = 3, this is
+					// 4)
+	double n; // number of students interested in this project
+	double c; // cutoff
+	double popularity;
+	double projSatScore;
 
-		@OneToMany(targetEntity=Student.class, cascade=CascadeType.ALL)
-		public List<Student> members;
-		
-		// information that correlates directly to db.Projects
-		@Id
-		@GeneratedValue
-		int projectId;
-		String projectName;
-		int statusId;
-		String semester;
-		String year;
-		
-		public List<Student> getMembers() {
-			return members;
-		}
+	@OneToMany(targetEntity = Student.class, cascade = CascadeType.ALL)
+	public List<Student> members;
 
-		public void setMembers(List<Student> members) {
-			this.members = members;
-		}
-		
+	// information that correlates directly to db.Projects
+	@Id
+	@GeneratedValue
+	int projectId;
+	String projectName;
+	int statusId;
+	String semester;
+	String year;
 
-		@JsonIgnore
-		@Transient
-		String statusType; // not in db table
-		int maxSize;
-		int minSize;
-		String description;
-		String background;
-		String technologies;
-		String adminComments;
-		// User ID of the stake holder associated with this 
-		long stakeholderId;
-		
-		
-		public double getSum_p() {
-			return sum_p;
-		}
+	public List<Student> getMembers() {
+		return members;
+	}
 
-		public void setSum_p(double sum_p) {
-			this.sum_p = sum_p;
-		}
-		
-		public void incSum_p(int p) {
-			this.sum_p = sum_p + p;
-		}
+	public void setMembers(List<Student> members) {
+		this.members = members;
+	}
 
-		public double getP_max() {
-			return p_max;
-		}
+	@JsonIgnore
+	@Transient
+	String statusType; // not in db table
+	int maxSize;
+	int minSize;
+	String description;
+	String background;
+	String technologies;
+	String adminComments;
+	// User ID of the stake holder associated with this
+	long stakeholderId;
 
-		public void setP_max(double p_max) {
-			this.p_max = p_max;
-		}
+	public double getSum_p() {
+		return sum_p;
+	}
 
-		public double getN() {
-			return n;
-		}
+	public void setSum_p(double sum_p) {
+		this.sum_p = sum_p;
+	}
 
-		public void setN(double n) {
-			this.n = n;
-		}
-		
-		public void incN() {
-			this.n = n + 1;
-		}
+	public void incSum_p(int p) {
+		this.sum_p = sum_p + p;
+	}
 
-		public double getC() {
-			return c;
-		}
+	public double getP_max() {
+		return p_max;
+	}
 
-		public void setC(double c) {
-			this.c = c;
-		}
+	public void setP_max(double p_max) {
+		this.p_max = p_max;
+	}
 
-		public double getPopularity() {
-			return popularity;
-		}
+	public double getN() {
+		return n;
+	}
 
-		public void setPopularity(double popularity) {
-			this.popularity = popularity;
-		}
+	public void setN(double n) {
+		this.n = n;
+	}
 
-		public double getProjSatScore() {
-			return projSatScore;
-		}
+	public void incN() {
+		this.n = n + 1;
+	}
 
-		public void setProjSatScore(double projSatScore) {
-			this.projSatScore = projSatScore;
-		}
+	public double getC() {
+		return c;
+	}
 
-		public int getProjectId() {
-			return projectId;
-		}
+	public void setC(double c) {
+		this.c = c;
+	}
 
-		public void setProjectId(int projectId) {
-			this.projectId = projectId;
-		}
+	public double getPopularity() {
+		return popularity;
+	}
 
-		public String getProjectName() {
-			return projectName;
-		}
+	public void setPopularity(double popularity) {
+		this.popularity = popularity;
+	}
 
-		public void setProjectName(String projectName) {
-			this.projectName = projectName;
-		}
-		
+	public double getProjSatScore() {
+		return projSatScore;
+	}
 
-		public int getStatusId() {
-			return statusId;
-		}
+	public void setProjSatScore(double projSatScore) {
+		this.projSatScore = projSatScore;
+	}
 
-		public void setStatusId(int statusId) {
-			this.statusId = statusId;
-		}
-		
-		public String getStatusType() {
-			return statusType;
-		}
+	public int getProjectId() {
+		return projectId;
+	}
 
-		public void setStatusType(String status) {
-			switch (status) {
-				case "1": this.statusType = "Pending Approval";
-				break;
-				
-				case "2": this.statusType = "Approved";
-				break;
-				
-				case "3": this.statusType = "Rejected";
-				break;
-				
-				case "4": this.statusType = "Changes Requested";
-				break;
-			}
-		}
-		
-		public String getSemester() {
-			return semester;
-		}
+	public void setProjectId(int projectId) {
+		this.projectId = projectId;
+	}
 
-		public void setSemester(String semester) {
-			this.semester = semester;
-		}
-		
-		public String getYear() {
-			return year;
-		}
-		
-		public void setYear(String year) {
-			this.year = year;
-		}
+	public String getProjectName() {
+		return projectName;
+	}
 
-		public int getMaxSize() {
-			return maxSize;
-		}
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 
-		public void setMaxSize(int maxSize) {
-			this.maxSize = maxSize;
-		}
+	public int getStatusId() {
+		return statusId;
+	}
 
-		public int getMinSize() {
-			return minSize;
-		}
+	public void setStatusId(int statusId) {
+		this.statusId = statusId;
+	}
 
-		public void setMinSize(int minSize) {
-			this.minSize = minSize;
-		}
+	public String getStatusType() {
+		return statusType;
+	}
 
-		public String getDescription() {
-			return description;
-		}
+	public void setStatusType(String status) {
+		switch (status) {
+		case "1":
+			this.statusType = "Pending Approval";
+			break;
 
-		public void setDescription(String description) {
-			this.description = description;
-		}
+		case "2":
+			this.statusType = "Approved";
+			break;
 
-		public String getBackground() {
-			return background;
-		}
+		case "3":
+			this.statusType = "Rejected";
+			break;
 
-		public void setBackground(String background) {
-			this.background = background;
+		case "4":
+			this.statusType = "Changes Requested";
+			break;
 		}
+	}
 
-		public String getTechnologies() {
-			return technologies;
-		}
+	public String getSemester() {
+		return semester;
+	}
 
-		public void setTechnologies(String technologies) {
-			this.technologies = technologies;
-		}
-		
-		public String getAdminComments() {
-			return adminComments;
-		}
+	public void setSemester(String semester) {
+		this.semester = semester;
+	}
 
-		public void setAdminComments(String adminComments) {
-			this.adminComments = adminComments;
-		}
-		
-		public long getStakeholderId() {
-			return stakeholderId;
-		}
-		
-		public void setStakeholderId(long stakeholderId) {
-			this.stakeholderId = stakeholderId;
-		}
-		
-		// RANKING ALGORITHM FUNCTIONALITY:
+	public String getYear() {
+		return year;
+	}
 
-		public Project(int _p_max) {
-			members = new Vector<Student>();
-			sum_p = 0;
-			p_max = _p_max;
-			n = 0;
-			c = 10;
-			popularity = 0;
-			statusType = "Pending Approval";
-			statusId = 1;
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public int getMaxSize() {
+		return maxSize;
+	}
+
+	public void setMaxSize(int maxSize) {
+		this.maxSize = maxSize;
+	}
+
+	public int getMinSize() {
+		return minSize;
+	}
+
+	public void setMinSize(int minSize) {
+		this.minSize = minSize;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getBackground() {
+		return background;
+	}
+
+	public void setBackground(String background) {
+		this.background = background;
+	}
+
+	public String getTechnologies() {
+		return technologies;
+	}
+
+	public void setTechnologies(String technologies) {
+		this.technologies = technologies;
+	}
+
+	public String getAdminComments() {
+		return adminComments;
+	}
+
+	public void setAdminComments(String adminComments) {
+		this.adminComments = adminComments;
+	}
+
+	public long getStakeholderId() {
+		return stakeholderId;
+	}
+
+	public void setStakeholderId(long stakeholderId) {
+		this.stakeholderId = stakeholderId;
+	}
+
+	// RANKING ALGORITHM FUNCTIONALITY:
+
+	public Project(int _p_max) {
+		members = new Vector<Student>();
+		sum_p = 0;
+		p_max = _p_max;
+		n = 0;
+		c = 10;
+		popularity = 0;
+		statusType = "Pending Approval";
+		statusId = 1;
+	}
+
+	public Project() {
+		this.members = new ArrayList<Student>();
+	}
+
+	public Project(Project orig) {
+		this.members = new ArrayList<Student>();
+		for (Student s : orig.members) {
+			this.members.add(new Student(s));
 		}
-		
-		public Project()
-		{
-			this.members = new ArrayList<Student>();
-		}
-		
-		public Project(Project orig) {
-			this.members = new ArrayList<Student>();
-			for (Student s : orig.members) {
-				this.members.add(new Student(s));
-			}
-			this.sum_p = orig.sum_p;
-			this.p_max = orig.p_max;
-			this.n = orig.n;
-			this.c = orig.c;
-			this.popularity = orig.popularity;
-			this.projSatScore = orig.projSatScore;
-			this.projectId = orig.projectId;
-			this.projectName = orig.projectName;
-			this.statusId = orig.statusId;
-			this.minSize = orig.minSize;
-			this.maxSize = orig.maxSize;
-			this.semester = orig.semester;
-		}
-		
-		public double returnProjSatScore() {
-			double maxScore = p_max * maxSize; // max score possible
-			
-			double totalScore = 0;
-			for (Student student : members) {
-				int ranking = student.getRankings().get(this.projectName);
-				totalScore += ProjectAssignment.getStudentSatScore(ranking);
-			}
-			
-			this.projSatScore = totalScore / maxScore;
-			return this.projSatScore;
-		}
-		
-		public double returnPopularity() {
-			double first = (2 * this.sum_p) / (this.n * this.p_max);
-			double _popularity = ( first + (this.n / this.c) ) / 3;
-			
-			this.popularity = _popularity;
-			return _popularity;
-		}
-		
-		public String toString() {
-			return ("Project #" + this.projectId + ": '" + this.projectName + "' | " + this.minSize + "-" + this.maxSize + " " + this.p_max);
-		}
-		
-		public void printMembers() {
-			for (Student s : this.members) {
-				System.out.print(s.getFirstName() + " " + s.getLastName() + " ");
-			}
-			System.out.println("");
+		this.sum_p = orig.sum_p;
+		this.p_max = orig.p_max;
+		this.n = orig.n;
+		this.c = orig.c;
+		this.popularity = orig.popularity;
+		this.projSatScore = orig.projSatScore;
+		this.projectId = orig.projectId;
+		this.projectName = orig.projectName;
+		this.statusId = orig.statusId;
+		this.minSize = orig.minSize;
+		this.maxSize = orig.maxSize;
+		this.semester = orig.semester;
+	}
+
+	public double returnProjSatScore() {
+		double maxScore = p_max * maxSize; // max score possible
+
+		double totalScore = 0;
+		for (Student student : members) {
+			int ranking = student.getOrderedRankings().get(this.projectId);
+			totalScore += ProjectAssignment.getStudentSatScore(ranking);
 		}
 
-		/* Comparator Stuff */
+		this.projSatScore = totalScore / maxScore;
+		return this.projSatScore;
+	}
 
-		@Override
-		public int compareTo(Object o) {
-			if (!(o instanceof Project))
+	public double returnPopularity() {
+		double first = (2 * this.sum_p) / (this.n * this.p_max);
+		double _popularity = (first + (this.n / this.c)) / 3;
+
+		this.popularity = _popularity;
+		return _popularity;
+	}
+
+	public String toString() {
+		return ("Project #" + this.projectId + ": '" + this.projectName + "' | " + this.minSize + "-" + this.maxSize
+				+ " " + this.p_max);
+	}
+
+	public void printMembers() {
+		for (Student s : this.members) {
+			System.out.print(s.getFirstName() + " " + s.getLastName() + " ");
+		}
+		System.out.println("");
+	}
+
+	/* Comparator Stuff */
+
+	@Override
+	public int compareTo(Object o) {
+		if (!(o instanceof Project))
+			throw new ClassCastException();
+
+		Project p = (Project) o;
+
+		return (this.projectName).compareTo(p.projectName);
+	}
+
+	// sorts by popularity in descending order
+	public static class popularityComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			if (!(o1 instanceof Project) || !(o2 instanceof Project))
 				throw new ClassCastException();
 
-			Project p = (Project) o;
+			Project p1 = (Project) o1;
+			Project p2 = (Project) o2;
 
-			return (this.projectName).compareTo(p.projectName);
+			if (p1.returnPopularity() > p2.returnPopularity())
+				return -1;
+			else if (p1.returnPopularity() < p2.returnPopularity())
+				return 1;
+			else
+				return 0;
 		}
-		
-		// sorts by popularity in descending order
-		public static class popularityComparator implements Comparator {
-			public int compare(Object o1, Object o2) {
-				if (!(o1 instanceof Project) || !(o2 instanceof Project))
-					throw new ClassCastException();
-				
-				Project p1 = (Project) o1;
-				Project p2 = (Project) o2;
-							
-		        if (p1.returnPopularity() > p2.returnPopularity()) return -1;
-		        else if (p1.returnPopularity() < p2.returnPopularity()) return 1;
-		        else return 0;
-			}
-		}
+	}
 }
