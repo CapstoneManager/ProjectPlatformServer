@@ -256,6 +256,7 @@ public class ProjectService {
 			}
 
 		}
+		
 		List<Student> students = (List<Student>) userService.getStudents();
 		// students = (ArrayList<Student>) applyRankingsToStudents(students,
 		// existingProjects);

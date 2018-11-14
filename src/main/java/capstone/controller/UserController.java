@@ -1,21 +1,11 @@
 package capstone.controller;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.servlet.ServletException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import capstone.config.JwtTokenProvider;
-import capstone.model.Project;
 import capstone.model.RegisteredStudentEmail;
 import capstone.model.users.Admin;
 import capstone.model.users.Stakeholder;
@@ -37,8 +26,6 @@ import capstone.service.EmailService;
 import capstone.service.UserService;
 import capstone.util.Constants;
 import capstone.util.EncryptPassword;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 @RestController
 @RequestMapping("/users")

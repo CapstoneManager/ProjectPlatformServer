@@ -71,15 +71,23 @@ public class JwtTokenProvider {
 
 	  public String getEmail(String token) {
 	    return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-	  }
+		}
+		
+		public String getUserRole(String token) {
+			return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("auth");
+		}
 
 	  public String resolveToken(HttpServletRequest req) {
 	    String bearerToken = req.getHeader("Authorization");
-	    if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-	      return bearerToken.substring(7, bearerToken.length());
-	    }
-	    return null;
-	  }
+	    return resolveToken(bearerToken);
+		}
+		
+		public String resolveToken(String bearerToken) {
+			if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+				return bearerToken.substring(7, bearerToken.length());
+			}
+			return null;
+		}
 
 
 		public boolean validateToken(String token) {

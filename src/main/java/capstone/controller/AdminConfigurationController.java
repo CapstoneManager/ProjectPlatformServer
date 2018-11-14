@@ -1,6 +1,8 @@
 package capstone.controller;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -54,8 +56,37 @@ public class AdminConfigurationController {
 		return acRepository.findOne(currentId);
 	}
 
-	@GetMapping("/projectData")
-	public @ResponseBody String getProjectData() {
+	@GetMapping("/algorithm-status")
+	public @ResponseBody Boolean getAlgorithmStatus() {
+		try {
+			HttpURLConnection connection;
+			URL url = new URL("http://localhost:5000/status");
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("User-Agent", USER_AGENT);
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+			System.out.println("SERVER RESPONSE: " + response.toString());
+			if (response.toString().equals("true")) {
+				return Boolean.TRUE;
+			}
+
+		} catch (Exception e) {
+			return Boolean.FALSE;
+		}
+		return Boolean.FALSE;
+	}
+
+	@GetMapping("/run-algorithm")
+	public @ResponseBody String runAlgorithm() {
 		JSONObject toRet = new JSONObject();
 
 		try {

@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/init").permitAll().antMatchers("/projects/init").permitAll()
                 .antMatchers("/users/login").permitAll().antMatchers("/users/register/admin").permitAll()
                 .antMatchers("/users/register/stakeholder").permitAll().antMatchers("/users/register/student")
-                .permitAll().antMatchers("/admin/projectData").permitAll()
+                .permitAll().antMatchers("/admin/run-algorithm").permitAll().antMatchers("/admin/algorithm-status").permitAll()
                 // Disallow everything else..
                 .anyRequest().authenticated();
 

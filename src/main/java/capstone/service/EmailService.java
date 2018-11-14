@@ -19,11 +19,32 @@ public class EmailService {
 	@Autowired
 	private JavaMailSender mailSender;
 	
-    public Boolean sendEmail(String subjectLine, String messageBody, String toEmail ) {
+    public Boolean sendEmail(String subjectLine, String messageBody, String toEmail) {
     		MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
-                mimeMessage.setRecipient(Message.RecipientType.TO,
-                        new InternetAddress(toEmail));
+                mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+                mimeMessage.setFrom(new InternetAddress(Constants.CSCI401_EMAIL));
+                mimeMessage.setSubject(subjectLine);
+                mimeMessage.setText(messageBody);
+            }
+        };
+
+        try {
+            this.mailSender.send(preparator);
+            return true;
+        }
+        catch (MailException ex) {
+            // simply log it and go on...
+            System.err.println(ex.getMessage());
+        }
+        return false;
+	}
+	
+    public Boolean sendEmailWithCC(String subjectLine, String messageBody, String toEmail, String ccEmail) {
+    		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+            public void prepare(MimeMessage mimeMessage) throws Exception {
+                mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+                mimeMessage.setRecipient(Message.RecipientType.CC, new InternetAddress(ccEmail));
                 mimeMessage.setFrom(new InternetAddress(Constants.CSCI401_EMAIL));
                 mimeMessage.setSubject(subjectLine);
                 mimeMessage.setText(messageBody);
