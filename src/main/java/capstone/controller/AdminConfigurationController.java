@@ -8,6 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeCreator;
@@ -88,6 +90,7 @@ public class AdminConfigurationController {
 	@GetMapping("/run-algorithm")
 	public @ResponseBody String runAlgorithm() {
 		JSONObject toRet = new JSONObject();
+		Random random = new Random();
 
 		try {
 			Collection<Student> studentsList = userService.getStudents();
@@ -121,12 +124,27 @@ public class AdminConfigurationController {
 			JSONArray rankings = new JSONArray();
 			for (Student student : studentsList) {
 				JSONArray studentRankings = new JSONArray();
+				HashMap<Integer, Integer> rankedProjectIds = student.getRankedProjectIds(); // id -> value
+				HashSet<Integer> rankSet = new HashSet<>(rankedProjectIds.values());
 				for (Project project : projectsList) {
-					HashMap<Integer, Integer> rankedProjectIds = student.getRankedProjectIds();
 					if (rankedProjectIds.containsKey(project.getProjectId())) {
-						studentRankings.put(rankedProjectIds.get(project.getProjectId()));
+						studentRankings.put(rankedProjectIds.get(project.getProjectId()) + 1);
 					} else {
 						studentRankings.put(6);
+					}
+				}
+				while (rankSet.size() < 5) {
+					int rand = random.nextInt(projectsList.size());
+					while (((Integer) studentRankings.get(rand)).equals(6) == false) {
+						rand = random.nextInt(projectsList.size());
+					}
+					boolean set = false;
+					for (int i = 0; i < 5 && set == false; i++) {
+						if (rankSet.contains(i) == false) {
+							rankSet.add(i);
+							studentRankings.put(rand, i + 1);
+							set = true;
+						}
 					}
 				}
 				rankings.put(studentRankings);
@@ -140,30 +158,29 @@ public class AdminConfigurationController {
 		} catch (Exception e) {
 
 		}
+		// try {
+		// HttpURLConnection connection;
+		// URL url = new URL("http://localhost:5000/algorithm");
+		// connection = (HttpURLConnection) url.openConnection();
+		// connection.setRequestMethod("POST");
+		// connection.setRequestProperty("User-Agent", USER_AGENT);
+		// connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+		// connection.setRequestProperty("Content-Type", "application/json");
+		// connection.setDoOutput(true);
 
-		try {
-			HttpURLConnection connection;
-			URL url = new URL("http://localhost:5000/algorithm");
-			connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("User-Agent", USER_AGENT);
-			connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setDoOutput(true);
+		// System.out.println("writing");
 
-			System.out.println("writing");
+		// DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+		// wr.writeBytes(toRet.toString());
+		// wr.flush();
+		// wr.close();
 
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(toRet.toString());
-			wr.flush();
-			wr.close();
+		// connection.getResponseCode();
 
-			connection.getResponseCode();
-
-			System.out.println("written");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		// System.out.println("written");
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
 
 		return toRet.toString();
 	}

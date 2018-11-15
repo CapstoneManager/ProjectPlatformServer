@@ -4,20 +4,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import capstone.config.JwtTokenProvider;
 import capstone.model.Project;
 import capstone.model.users.Stakeholder;
 import capstone.model.users.Student;
@@ -36,8 +35,6 @@ public class ProjectController {
 	private UserService userService;
 	@Autowired
 	private EmailService emailService;
-	@Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
 	// Initialize database tables with sample students and projects taken from the
 	// Spring 2018 class.
@@ -153,86 +150,34 @@ public class ProjectController {
 
 	// Assign projects to students
 	@PostMapping("/assign-to-students")
-	public @ResponseBody String assignProjectsToStudents(@RequestBody List<Project> projectMatches) {
+	public @ResponseBody String assignProjectsToStudents(@RequestBody String projectMatches) throws JSONException {
+		JSONObject data = new JSONObject(projectMatches);
+		System.out.println("IN ASSIGN TO STUDENTS");
 		List<Project> updatedProjects = new ArrayList<Project>();
+		
+		Iterator<String> keys = data.keys();
+		System.out.println(data.toString());
+		
+		while(keys.hasNext()) {
+		    String key = keys.next();
+			JSONArray projectValue = (JSONArray) data.get(key);
 
-		for (Project proj : projectMatches) {
-			if (proj.getProjectId() > 0) {
-				Project project = projectService.findByProjectId(proj.getProjectId());
-
-				// List<Student> projectMembers = new ArrayList<Student>();
-				// for(Student s : proj.getMembers()) {
-				// projectMembers.add(userService.findByUserId(s.getUserId()));
-				// }
-				// project.setMembers(projectMembers);
+			String projectId = projectValue.getString(0);
+			Project project = projectService.findByProjectId(Integer.parseInt(projectId));
+			if (project.getProjectId() > 0) {
 				updatedProjects.add(project);
-
-				// Determine stakeholder for project
-				Stakeholder stakeholder = userService.findByStakeholderId((long) project.getStakeholderId());
-				String stakeholderEmail = "";
-				if (stakeholder == null) {
-					stakeholderEmail = "Please contact the professor for the email of your stakeholder";
-				} else {
-					stakeholderEmail = stakeholder.getEmail();
-				}
-
-				// Construct email body
-				String messageBody = project.getProjectName() + "\n\nProject Background: " + project.getBackground()
-						+ "\n\nProject Description: " + project.getDescription() + "\n\nStakeholder Email: "
-						+ stakeholderEmail + "\n\nTo find out who is on your team please login to the class website.";
 				// Email each student in the group the information
-				for (Student student : proj.getMembers()) {
-					// Set the given project for each student
-					Student saveStudent = userService.findByUserId(student.getUserId());
-					saveStudent.setProject(project);
+				Student student = userService.findByUserId(Long.parseLong(key));
+				System.out.println("Project: " + project.getProjectId() + "\n" + "Student: " + student.getUserId());
+				// Set the given project for each student
+				student.setProject(project);
 
-					String email = saveStudent.getEmail();
-					emailService.sendEmail("CSCI 401 Project Assignment", messageBody, email);
-					userService.saveUser(saveStudent);
-				}
+				userService.saveUser(student);
 			}
 		}
 		projectService.saveAssignment(updatedProjects);
+		System.out.println("END ASSIGN TO STUDENTS");
 		return Constants.SUCCESS;
-	}
-
-	@PostMapping("/email-assignments")
-	public @ResponseBody ResponseEntity<String> emailAssignments(@RequestHeader("Authorization") String bearerToken, @RequestBody String year, String semester){
-		String token = this.jwtTokenProvider.resolveToken(bearerToken);
-		String tokenEmail = this.jwtTokenProvider.getEmail(token);
-		User tokenUser = userService.findUserByEmail(tokenEmail);
-
-		if (!tokenUser.getUserType().equals("Admin")) {
-			return ResponseEntity.badRequest().body(null);
-		}
-
-		List<Student> students = new ArrayList<>(userService.getStudents());
-		for(Student s : students){
-			if(s.getYear().equals(year) && s.getSemester().equals(semester)){
-				Project project = s.getProject();
-				if(project == null){
-					continue;
-				}
-
-				// Determine stakeholder for project
-				Stakeholder stakeholder = userService.findByStakeholderId((long) project.getStakeholderId());
-				String stakeholderEmail = "";
-				if (stakeholder == null) {
-					stakeholderEmail = "Please contact the professor for the email of your stakeholder";
-				} else {
-					stakeholderEmail = stakeholder.getEmail();
-				}
-
-				String messageBody = project.getProjectName() + "\n\nProject Background: " + project.getBackground()
-						+ "\n\nProject Description: " + project.getDescription() + "\n\nStakeholder Name: " + stakeholder.getFirstName() + " " + stakeholder.getLastName() + "\n\nStakeholder Email: "
-						+ stakeholderEmail + "\n\nTo find out who is on your team please login to the class website.";
-
-				String email = s.getEmail();
-				emailService.sendEmailWithCC("CSCI 401 Project Assignment", messageBody, email, tokenEmail);
-			}
-		}
-
-		return ResponseEntity.ok().body(Constants.SUCCESS);
 	}
 
 	// Save projects when altered

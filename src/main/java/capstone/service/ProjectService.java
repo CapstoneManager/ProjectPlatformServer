@@ -165,21 +165,17 @@ public class ProjectService {
 				// newStudent.setStudentId(students.size());
 				// newStudent.setUserId(students.size());
 
+				List<Integer> rankings = new ArrayList<>();
+
 				for (int i = 1; i <= NUM_RANKED; i++) { // for the student's Top 5 projects...
 					int projectId = Integer.parseInt(elements[i]);
 					Project rankedProject = projects.elementAt(projectId - 1); // !!! SUBTRACT 1, as the ranking's
 																				// indices skip 0 for readability
-
-					// add rankedProject to the Student data structure:
-					String projectName = rankedProject.getProjectName();
-					// newStudent.rankings.put(projectName, i);
-					// newStudent.orderedRankings.add(projectName);
-
-					// popularity metrics:
-					// Integer p = ProjectAssignment.getStudentSatScore(i);
-					// rankedProject.incSum_p(p);
-					// rankedProject.incN();
+					rankings.add(rankedProject.getProjectId());
 				}
+
+				newStudent.setOrderedRankings(rankings);
+
 				userService.saveUser(newStudent);
 				students.addElement(newStudent);
 				// writer.println(newStudent);
