@@ -62,7 +62,7 @@ public class AdminConfigurationController {
 	public @ResponseBody Boolean getAlgorithmStatus() {
 		try {
 			HttpURLConnection connection;
-			URL url = new URL("http://localhost:5000/status");
+			URL url = new URL("https://localhost:5000/status");
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", USER_AGENT);
@@ -158,29 +158,29 @@ public class AdminConfigurationController {
 		} catch (Exception e) {
 
 		}
-		// try {
-		// HttpURLConnection connection;
-		// URL url = new URL("http://localhost:5000/algorithm");
-		// connection = (HttpURLConnection) url.openConnection();
-		// connection.setRequestMethod("POST");
-		// connection.setRequestProperty("User-Agent", USER_AGENT);
-		// connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-		// connection.setRequestProperty("Content-Type", "application/json");
-		// connection.setDoOutput(true);
+		try {
+		HttpURLConnection connection;
+		URL url = new URL("https://localhost:5000/algorithm");
+		connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+		connection.setRequestProperty("User-Agent", USER_AGENT);
+		connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+		connection.setRequestProperty("Content-Type", "application/json");
+		connection.setDoOutput(true);
 
-		// System.out.println("writing");
+		System.out.println("writing");
 
-		// DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-		// wr.writeBytes(toRet.toString());
-		// wr.flush();
-		// wr.close();
+		DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+		wr.writeBytes(toRet.toString());
+		wr.flush();
+		wr.close();
 
-		// connection.getResponseCode();
+		connection.getResponseCode();
 
-		// System.out.println("written");
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
+		System.out.println("written");
+		} catch (Exception e) {
+		e.printStackTrace();
+		}
 
 		return toRet.toString();
 	}
