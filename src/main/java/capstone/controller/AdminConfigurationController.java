@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 
@@ -61,9 +63,9 @@ public class AdminConfigurationController {
 	@GetMapping("/algorithm-status")
 	public @ResponseBody Boolean getAlgorithmStatus() {
 		try {
-			HttpURLConnection connection;
+			HttpsURLConnection connection;
 			URL url = new URL("https://localhost:5000/status");
-			connection = (HttpURLConnection) url.openConnection();
+			connection = (HttpsURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", USER_AGENT);
 
@@ -159,9 +161,9 @@ public class AdminConfigurationController {
 
 		}
 		try {
-		HttpURLConnection connection;
+		HttpsURLConnection connection;
 		URL url = new URL("https://localhost:5000/algorithm");
-		connection = (HttpURLConnection) url.openConnection();
+		connection = (HttpsURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("User-Agent", USER_AGENT);
 		connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
