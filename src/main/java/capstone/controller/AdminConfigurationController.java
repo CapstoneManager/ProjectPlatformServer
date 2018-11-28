@@ -64,7 +64,7 @@ public class AdminConfigurationController {
 	public @ResponseBody Boolean getAlgorithmStatus() {
 		try {
 			HttpsURLConnection connection;
-			URL url = new URL("https://localhost:5000/status");
+			URL url = new URL("https://cs401projects.tk:5000/status");
 			connection = (HttpsURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", USER_AGENT);
@@ -162,7 +162,7 @@ public class AdminConfigurationController {
 		}
 		try {
 		HttpsURLConnection connection;
-		URL url = new URL("https://localhost:5000/algorithm");
+		URL url = new URL("https://cs401projects.tk:5000/algorithm");
 		connection = (HttpsURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("User-Agent", USER_AGENT);
